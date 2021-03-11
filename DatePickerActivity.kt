@@ -1,70 +1,129 @@
 package com.example.navigationdraweractivity
 
-import android.os.Bundle
-import android.view.Menu
-import android.view.MenuItem
-import android.widget.Toast
-import com.google.android.material.floatingactionbutton.FloatingActionButton
-import com.google.android.material.snackbar.Snackbar
-import com.google.android.material.navigation.NavigationView
-import androidx.navigation.findNavController
-import androidx.navigation.ui.AppBarConfiguration
-import androidx.navigation.ui.navigateUp
-import androidx.navigation.ui.setupActionBarWithNavController
-import androidx.navigation.ui.setupWithNavController
-import androidx.drawerlayout.widget.DrawerLayout
+import android.app.DatePickerDialog
 import androidx.appcompat.app.AppCompatActivity
-import androidx.appcompat.widget.Toolbar
+import android.os.Bundle
+import android.widget.DatePicker
+import android.widget.NumberPicker
+import androidx.core.view.get
+import kotlinx.android.synthetic.main.activity_sign_up.*
+import java.util.*
 
-class HomeActivity : AppCompatActivity() {
-
-    private lateinit var appBarConfiguration: AppBarConfiguration
-
+class SignUpActivity : AppCompatActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        setContentView(R.layout.activity_home)
-        val toolbar: Toolbar = findViewById(R.id.toolbar)
-        toolbar.setTitle("Home")
-        setSupportActionBar(toolbar)
+        setContentView(R.layout.activity_sign_up)
 
-        val fab: FloatingActionButton = findViewById(R.id.fab)
-        fab.setOnClickListener { view ->
-            Snackbar.make(view, "Replace with your own action", Snackbar.LENGTH_LONG)
-                    .setAction("Action", null).show()
+
+        var month = arrayOf<String>("Jan","Feb", "March", "April", "May", "June", "July", "Aug", "Sep", "Oct", "Nov", "Dec")
+        var str = arrayOf<String>("PM","AM")
+
+
+
+        //date
+
+        datePickerMin.minValue = 1
+        datePickerMin.maxValue = 31
+
+        monthPickerMin.minValue = 0
+        monthPickerMin.maxValue = (month.size - 1)
+
+        yearPickerMin.minValue = 1990
+        yearPickerMin.maxValue = 2021
+
+
+
+        var dateVal = 1
+        var monthVal = 1
+        var yearVal = 1990
+        var monthStr = "Jan"
+
+        monthPickerMin.displayedValues = month
+
+        datePickerMin.setOnValueChangedListener{ numberPicker: NumberPicker, i: Int, i1: Int ->
+
+            dateVal = datePickerMin.value
+
         }
-        val drawerLayout: DrawerLayout = findViewById(R.id.drawer_layout)
-        val navView: NavigationView = findViewById(R.id.nav_view)
-        val navController = findNavController(R.id.nav_host_fragment)
-        // Passing each menu ID as a set of Ids because each
-        // menu should be considered as top level destinations.
-        appBarConfiguration = AppBarConfiguration(setOf(
-                R.id.nav_home, R.id.nav_gallery, R.id.nav_slideshow), drawerLayout)
-        setupActionBarWithNavController(navController, appBarConfiguration)
-        navView.setupWithNavController(navController)
-    }
 
-    override fun onCreateOptionsMenu(menu: Menu): Boolean {
-        // Inflate the menu; this adds items to the action bar if it is present.
-        menuInflater.inflate(R.menu.home, menu)
-        return true
-    }
+        monthPickerMin.setOnValueChangedListener{ numberPicker: NumberPicker, i: Int, i1: Int ->
 
-    override fun onSupportNavigateUp(): Boolean {
-        val navController = findNavController(R.id.nav_host_fragment)
-        return navController.navigateUp(appBarConfiguration) || super.onSupportNavigateUp()
+            val j = numberPicker.value
+            monthStr = month[j]
 
-    }
+        }
 
-    override fun onOptionsItemSelected(item: MenuItem): Boolean {
-        return super.onOptionsItemSelected(item)
+        yearPickerMin.setOnValueChangedListener{ numberPicker: NumberPicker, i: Int, i1: Int ->
+
+            yearVal = numberPicker.value
+
+        }
+
+        //time
+        numberPickerMin.minValue =0
+        numberPickerMin.maxValue = 12
 
 
+        numberPickerSec.minValue =0
+        numberPickerSec.maxValue = 59
 
-    }
+        numberPickerAm.minValue = 0
+        numberPickerAm.maxValue = (str.size -1)
 
-    override fun onContextItemSelected(item: MenuItem): Boolean {
-        return super.onContextItemSelected(item)
+        var min = 0
+        var sec = 0
+        var amOrPm = "PM"
 
 
+
+        //for am or pm
+
+        numberPickerAm.displayedValues = str
+
+        numberPickerMin.setOnValueChangedListener{ numberpicker, i, i2 ->
+
+            min = numberpicker.value
+        }
+
+
+        numberPickerMin.setOnValueChangedListener{ numberpicker, i, i2 ->
+
+            min = numberpicker.value
+        }
+        numberPickerSec.setOnValueChangedListener{ numberPickerSec, i, i2 ->
+            sec = numberPickerSec.value
+
+        }
+        numberPickerAm.setOnValueChangedListener{ numberPicker: NumberPicker, i: Int, i1: Int ->
+
+            val i = numberPicker.value
+            amOrPm = str[i]
+
+        }
+
+        btnGetValue.setOnClickListener{
+
+            showTime.text = "$min : $sec : $amOrPm"
+            showDate.text = "$dateVal / $monthStr / $yearVal"
+        }
+
+
+
+        //calender
+
+        val c = Calendar.getInstance()
+        val calYear = c.get(Calendar.YEAR)
+        val calMonth = c.get(Calendar.MONTH)
+        val calDay = c.get(Calendar.DAY_OF_MONTH)
+
+        btnCalender.setOnClickListener{
+
+            val dpd = DatePickerDialog(this, DatePickerDialog.OnDateSetListener{view, year, month, dayOfMonth ->
+
+                showCalender.setText("$dayOfMonth / $month / $year")
+            }, calYear, calMonth, calDay)
+
+            dpd.show()
+        }
     }
 }
